@@ -91,8 +91,8 @@ if __name__ == '__main__':
         source_image_path: original image
         save_folder: save directory
     """
-    source_image_path = '../../Images/basic-L.jpg'
-    save_folder = '../../Outputs'
+    source_image_path = './images/basic-L.jpg'
+    save_folder = './outputs'
 
     # Final canvas size
     width, height = 1024, 1024
