@@ -107,8 +107,8 @@ if __name__ == '__main__':
         source_folder: Original file directory
         save_folder: Save file directory
     """
-    source_folder = '../../Images/'
-    save_folder = '../../Outputs/'
+    source_folder = './images'
+    save_folder = './outputs'
 
     # sum: epoch * img_num
     epoch = 1
