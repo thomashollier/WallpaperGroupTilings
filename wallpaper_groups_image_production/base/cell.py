@@ -48,7 +48,7 @@ class Cell:
         self.GroundImg = Image.new('RGBA', (self.picture_width, self.picture_height), 0)
 
         self.rectangle_width = kwargs.pop('rectangle_width', 200)
-        self.rectangle_height = kwargs.pop('rectangle_height', 100)
+        self.rectangle_height = kwargs.pop('rectangle_height', 200)
         self.markImg = Image.new('RGBA', (self.rectangle_width, self.rectangle_height), 0)  # diaphaneity = 0 or 'red'
 
         self.kind = kwargs.get('kind')
@@ -57,10 +57,9 @@ class Cell:
         self.source_image_path = kwargs.pop('source_image_path', "../images/dataset/1.png")
         self.point = kwargs.pop('point')
         self.img = Image.open(self.source_image_path).convert("RGBA").resize(np.max(self.point, axis=0))
+        self.class_name = self.__class__.__name__
 
         self.angle = kwargs.pop('angle', 0)
-        print('angle:', self.angle)
-        print('info:', self.info)
 
         self.is_save = kwargs.pop('is_save', True)
         if 'save_image_path' in kwargs:  # 传入保存路径才保存
@@ -69,6 +68,14 @@ class Cell:
             self.is_save = False
         self.is_show = kwargs.pop('is_show', False)
 
+        print("\n--- %s ---" % type(self).__name__)
+        print('kind:', self.kind)
+        print('angle:', self.angle)
+        print('info:', self.info)
+        print('point:\n', self.point)
+        print('save_image_path:', self.save_image_path)
+        print('class name:', self.class_name)
+        print("--- end cell")
         self.cut()
 
     def rotate(self, angle, pos, center=None, expand=True):
@@ -187,13 +194,18 @@ class Cell:
     def save(self):
         if self.is_save:
             img_name, _ = os.path.splitext(os.path.basename(self.source_image_path))
-            folder_path = os.path.join(self.save_image_path, self.__class__.__name__, str(self.kind))
+            folder_path = os.path.join(self.save_image_path, img_name.split('.')[0])
             if not os.path.exists(folder_path):
                 os.makedirs(folder_path)
             path = os.path.join(folder_path,
-                                '{i}_{j}_{k}_angle{l}.png'.format(i=img_name, j=self.kind, k=self.info, l=self.angle))
-            print('img save path:', path)
+                                '{i}_{n}_{j}_{k}_angle{l}.png'.format(i=img_name, n=self.__class__.__name__, j=self.kind, k=self.info, l=self.angle))
+            print('open \"%s\"'% path)
             self.GroundImg.save(path)
+            if self.class_name.find("Line")>-1:
+                path = os.path.join(folder_path,
+                                    '{i}_{n}_{j}_{k}_angle{l}_tile.png'.format(i=img_name, n=self.__class__.__name__, j=self.kind, k=self.info, l=self.angle))
+                self.markImg.save(path)
+
 
     def run(self, func_list):
         """
@@ -203,5 +215,7 @@ class Cell:
                     such as 'paste_img','update_img','rotate','over_spread','show'.
         """
         for func, *parameter in func_list:
+            print('self.' + func,*parameter)
             eval('self.' + func)(*parameter)
+        print(self.__class__.__name__)
         self.ground_img_rotate()

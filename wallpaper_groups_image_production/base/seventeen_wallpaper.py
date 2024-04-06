@@ -231,6 +231,7 @@ class Pmg(Cell):
 
 class Pgg(Cell):
     def __init__(self, **kwargs):
+        print(kwargs)
         point, info = kwargs['point'], kwargs['info']
         kind, w, h = self.rectangle_init(point, info)
         kwargs.update({'kind': kind, 'rectangle_width': w, 'rectangle_height': h})

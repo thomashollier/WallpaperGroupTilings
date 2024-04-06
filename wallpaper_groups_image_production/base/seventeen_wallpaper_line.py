@@ -29,7 +29,7 @@ class P1Line(P1):
         ]
         self.run(func_list=func_list)
 
-    def save(self):
+    def sssave(self):
         if self.is_save:
             path_name_min = self.save_image_path + '/p1_' + str(self.info[-1]) + '_min.png'
             path_name = self.save_image_path + '/p1_' + str(self.info[-1]) + '_result.png'
@@ -40,7 +40,7 @@ class P1Line(P1):
 
 class P2Line(P2):
     def __init__(self, **kwargs):
-        super(P2Line, self).__init__(**kwargs)
+        super(P2Line,self).__init__(**kwargs)
 
     def generate(self):
         func_list = [('paste_img', (0, 0)),
@@ -114,6 +114,7 @@ class P2Line(P2):
                 ('rhomb', (self.info[1], h), red)
             ]
 
+        print(self.markImg)
         self.markImg = draw(self.markImg, draw_list)
         func_list = [
             ('over_spread',),
@@ -124,7 +125,7 @@ class P2Line(P2):
             func_list[0] = ('over_spread', (self.point[0][0] * 2, 0))
         self.run(func_list=func_list)
 
-    def save(self):
+    def sssave(self):
         if self.is_save:
             path_name_min = self.save_image_path + '/p2_' + str(self.info[-1]) + '_min.png'
             path_name = self.save_image_path + '/p2_' + str(self.info[-1]) + '_result.png'
@@ -172,7 +173,7 @@ class P2HexagonalLine(P2Hexagonal):
         ]
         self.run(func_list=func_list)
 
-    def save(self):
+    def sssave(self):
         if self.is_save:
             self.markImg.save(self.save_image_path + '/p2_hexagonal_min.png')
             self.GroundImg.save(self.save_image_path + '/p2_hexagonal_result.png')
@@ -220,7 +221,7 @@ class PmLine(Pm):
         ]
         self.run(func_list=func_list)
 
-    def save(self):
+    def sssave(self):
         if self.is_save:
             if self.info[-1] == 2:
                 path_name_min = self.save_image_path + '/pm_' + str(self.info[-1]) + '_min.png'
@@ -263,7 +264,7 @@ class PgLine(Pg):
         ]
         self.run(func_list=func_list)
 
-    def save(self):
+    def sssave(self):
         if self.is_save:
             self.markImg.save(self.save_image_path + '/pg_min.png')
             self.GroundImg.save(self.save_image_path + '/pg_result.png')
@@ -302,7 +303,7 @@ class CmLine(Cm):
         ]
         self.run(func_list=func_list)
 
-    def save(self):
+    def sssave(self):
         if self.is_save:
             self.markImg.save(self.save_image_path + '/cm_min.png')
             self.GroundImg.save(self.save_image_path + '/cm_result.png')
@@ -357,7 +358,7 @@ class PmmLine(Pmm):
         ]
         self.run(func_list=func_list)
 
-    def save(self):
+    def sssave(self):
         if self.is_save:
             self.markImg.save(self.save_image_path + '/pmm_min.png')
             self.GroundImg.save(self.save_image_path + '/pmm_result.png')
@@ -405,7 +406,7 @@ class PmgLine(Pmg):
         ]
         self.run(func_list=func_list)
 
-    def save(self):
+    def sssave(self):
         if self.is_save:
             self.markImg.save(self.save_image_path + '/pmg_min.png')
             self.GroundImg.save(self.save_image_path + '/pmg_result.png')
@@ -464,7 +465,7 @@ class PggLine(Pgg):
         ]
         self.run(func_list=func_list)
 
-    def save(self):
+    def sssave(self):
         if self.is_save:
             self.markImg.save(self.save_image_path + '/pgg_min.png')
             self.GroundImg.save(self.save_image_path + '/pgg_result.png')
@@ -472,10 +473,59 @@ class PggLine(Pgg):
 
 class CmmLine(Cmm):
     def __init__(self, **kwargs):
-        kwargs.update({'type': 'rhombic'})
+        #kwargs.update({'type': 'rhombic'})
         super(CmmLine, self).__init__(**kwargs)
 
     def generate(self):
+        if self.type == 'square':
+            self.generateSquare()
+        elif self.type == 'rhombic':
+            self.generateRhombus()
+
+    def generateSquare(self):
+        func_list = [('paste_img', (0, int(self.point[2][0] // 2))),
+                     ('update_img',),
+                     ('mirror_angle', -90, (0, 0)),
+                     ('mirror_angle', 90, (0, 0)),
+                     ('rotate', -180, (0, 0))
+                     ]
+        self.run(func_list=func_list)
+        draw_list = [
+            ('glide_refelection', ((0, 0), (0, self.point[2][0])), grey),
+            ('glide_refelection', ((0, 0), (self.point[2][0], 0)), grey),
+
+            ('refelection', ((0, self.point[2][0]), (self.point[2][0], 0)), blue),
+            ('refelection', ((0, 0), (self.point[2][0], self.point[2][0])), red),
+
+            ('glide_refelection', ((0, self.point[2][0] // 2), (self.point[2][0] // 2, self.point[2][0])), red),
+            ('glide_refelection', ((self.point[2][0] // 2, 0), ((self.point[2][0], self.point[2][0] // 2))), red),
+
+            ('glide_refelection', ((0, self.point[2][0] // 2), ((self.point[2][0] // 2, 0))), blue),
+            ('glide_refelection',
+             ((self.point[2][0] // 2, self.point[2][0]), ((self.point[2][0], self.point[2][0] // 2))), blue),
+
+            #
+            ('rhomb', (0, 0), purple),
+            ('rhomb', (0, self.point[2][0]), purple),
+            ('rhomb', (self.point[2][0], 0), purple),
+            ('rhomb', (self.point[2][0], self.point[2][0]), purple),
+            #
+            ('rhomb', (self.point[2][0] // 2, self.point[2][0] // 2), yellow),
+            #
+            ('rhomb', (0, self.point[2][0] // 2), green),
+            ('rhomb', (self.point[2][0] // 2, 0), green),
+            ('rhomb', (self.point[2][0] // 2, self.point[2][0]), green),
+            ('rhomb', (self.point[2][0], self.point[2][0] // 2), green),
+
+        ]
+        self.markImg = draw(self.markImg, draw_list)
+        func_list = [('over_spread',),
+                     ('save',),
+                     ('show',)
+                     ]
+        self.run(func_list=func_list)
+
+    def generateRhombus(self):
         func_list = [('paste_img', (0, 0)),
                      ('update_img',),
                      ('tb_mirror', (0, 0)),
@@ -525,7 +575,7 @@ class CmmLine(Cmm):
                      ]
         self.run(func_list=func_list)
 
-    def save(self):
+    def sssave(self):
         if self.is_save:
             self.markImg.save(self.save_image_path + '/cmm_min.png')
             self.GroundImg.save(self.save_image_path + '/cmm_result.png')
@@ -579,7 +629,7 @@ class CmmSquareLine(Cmm):
                      ]
         self.run(func_list=func_list)
 
-    def save(self):
+    def sssave(self):
         if self.is_save:
             self.markImg.save(self.save_image_path + '/cmm_square_min.png')
             self.GroundImg.save(self.save_image_path + '/cmm_squre_result.png')
@@ -627,7 +677,7 @@ class P4Line(P4):
         ]
         self.run(func_list=func_list)
 
-    def save(self):
+    def sssave(self):
         if self.is_save:
             self.markImg.save(self.save_image_path + '/p4_min.png')
             self.GroundImg.save(self.save_image_path + '/p4_result.png')
@@ -688,7 +738,7 @@ class P4mLine(P4m):
         ]
         self.run(func_list=func_list)
 
-    def save(self):
+    def sssave(self):
         if self.is_save:
             self.markImg.save(self.save_image_path + '/p4m_min.png')
             self.GroundImg.save(self.save_image_path + '/p4m_result.png')
@@ -761,7 +811,7 @@ class P4gLine(P4g):
         ]
         self.run(func_list=func_list)
 
-    def save(self):
+    def sssave(self):
         if self.is_save:
             self.markImg.save(self.save_image_path + '/p4g_min.png')
             self.GroundImg.save(self.save_image_path + '/p4g_result.png')
@@ -805,7 +855,7 @@ class P3Line(P3):
         ]
         self.run(func_list=func_list)
 
-    def save(self):
+    def sssave(self):
         if self.is_save:
             self.markImg.save(self.save_image_path + '/p3_min.png')
             self.GroundImg.save(self.save_image_path + '/p3_result.png')
@@ -868,7 +918,7 @@ class P3m1Line(P3m1):
         ]
         self.run(func_list=func_list)
 
-    def save(self):
+    def sssave(self):
         if self.is_save:
             self.markImg.save(self.save_image_path + '/p3m1_min.png')
             self.GroundImg.save(self.save_image_path + '/p3m1_result.png')
@@ -937,7 +987,7 @@ class P31mLine(P31m):
         ]
         self.run(func_list=func_list)
 
-    def save(self):
+    def sssave(self):
         if self.is_save:
             self.markImg.save(self.save_image_path + '/p31m_min.png')
             self.GroundImg.save(self.save_image_path + '/p31m_result.png')
@@ -991,7 +1041,7 @@ class P6Line(P6):
         ]
         self.run(func_list=func_list)
 
-    def save(self):
+    def sssave(self):
         if self.is_save:
             self.markImg.save(self.save_image_path + '/p6_min.png')
             self.GroundImg.save(self.save_image_path + '/p6_result.png')
@@ -1058,7 +1108,7 @@ class P6mLine(P6m):
         ]
         self.run(func_list=func_list)
 
-    def save(self):
+    def sssave(self):
         if self.is_save:
             self.markImg.save(self.save_image_path + '/p6m_min.png')
             self.GroundImg.save(self.save_image_path + '/p6m_result.png')

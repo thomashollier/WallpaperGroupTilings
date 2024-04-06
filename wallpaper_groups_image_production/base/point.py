@@ -4,12 +4,12 @@ from base.cell import Cell
 
 class Point:
     '''
-        kind=1： 正方形 square  info[w]:一个参数-->正方形边长
-        kind=2： 长方形 rectangular   info[w,h]:两个参数--> 长方形 长 宽
-        kind=3： 平行四边形  oblique   info[w_1,w_2,theta]:三个参数--> 长边 短边 夹角
-        kind=4： 菱形   rhombic   info[w,theta]:两个参数--> 边长 夹角
-        kind=5： 正六边形  hexagon   info[w]:一个参数--> 边长
-        kind=6: 三角形   triangle    info[w_1,w_2,theta]:三个参数--> 两条边及其夹角
+        kind=1: Square  info[w]: One parameter --> side length of the square
+        kind=2: Rectangular   info[w,h]: Two parameters --> width and height of the rectangle
+        kind=3: Parallelogram  info[w_1,w_2,theta]: Three parameters --> long side, short side, angle
+        kind=4: Rhombus   info[w,theta]: Two parameters --> side length, angle
+        kind=5: Hexagon   info[w]: One parameter --> side length
+        kind=6: Triangle    info[w_1,w_2,theta]: Three parameters --> two sides and the included angle
     '''
 
     def __init__(self, info):
@@ -18,20 +18,19 @@ class Point:
 
     @staticmethod
     def square(info):
-        # 正方形
+        # Square
         length = info[0]
 
-        # 重新定义画布大小为正方形边长
+        # Redefine canvas size as the side length of the square
         # rectangle_width = length
         # rectangle_height = length
         point_for_cut = np.array([[0, 0], [0, length], [length, length], [length, 0]])
 
         return point_for_cut
 
-    #
     @staticmethod
     def rectangular(info):
-        # 长方形
+        # Rectangular
         w = info[0]
         h = info[1]
 
@@ -42,22 +41,23 @@ class Point:
 
     @staticmethod
     def oblique(info):
-        # 平行四边形
+        # Parallelogram
 
-        # long_side 长边
-        # short_side  短边
+        # long_side: long side
+        # short_side: short side
         # long_side, short_side, theta = info[0], info[1], info[2]
         long_side, short_side, theta = info[:]
 
         if theta >= 90 or theta <= 0:
-            raise ValueError("the theta should between 90 and 0")
+            print(theta)
+            raise ValueError("The angle theta should be between 90 and 0")
 
         rectangle_height = int(long_side * np.sin(theta * np.pi / 180))
         temp_w = int(long_side * np.cos(theta * np.pi / 180))
 
         rectangle_width = temp_w + short_side
 
-        # print('point.py',short_side, long_side, rectangle_width, rectangle_height)
+        # print('point.py', short_side, long_side, rectangle_width, rectangle_height)
         point_for_cut = np.array(
             [[temp_w, 0], [0, rectangle_height], [short_side, rectangle_height],
              [temp_w + short_side, 0]])
@@ -66,13 +66,13 @@ class Point:
 
     @staticmethod
     def rhombic(info):
-        # 菱形
+        # Rhombus
 
         # length, theta = info[0],info[1]
         length, theta = info[:]
 
         if theta >= 180 or theta <= 0:
-            raise ValueError("the theta should between 180 and 0")
+            raise ValueError("The angle theta should be between 180 and 0")
 
         temp_theta = theta / 2
 
@@ -87,7 +87,7 @@ class Point:
 
     @staticmethod
     def hexagon(info):
-        # 正六边形
+        # Hexagon
 
         length = info[0]
 
@@ -107,16 +107,16 @@ class Point:
 
     @staticmethod
     def triangle(info):
-        # 三角形
+        # Triangle
         long_side, short_side, theta = info[:]
         if theta == 90:
-            # 直角
+            # Right angle
             rectangle_width = long_side
             rectangle_height = short_side
             point_for_cut = np.array([[0, 0], [0, rectangle_height], [rectangle_width, rectangle_height]])
 
         elif theta > 0 and theta < 90:
-            # 锐角
+            # Acute angle
             rectangle_width = long_side
             rectangle_height = int(short_side * np.sin(theta * np.pi / 180))
             temp_w = int(short_side * np.cos(theta * np.pi / 180))
@@ -124,7 +124,7 @@ class Point:
             point_for_cut = np.array([[temp_w, 0], [0, rectangle_height], [rectangle_width, rectangle_height]])
 
         elif theta > 90 and theta < 180:
-            # 钝角
+            # Obtuse angle
             rectangle_height = int(short_side * np.sin((theta) * np.pi / 180))
             temp_w = int(short_side * np.cos((180 - theta) * np.pi / 180))
             rectangle_width = long_side + temp_w
@@ -133,7 +133,7 @@ class Point:
             point_for_cut = np.array([[0, 0], [temp_w, rectangle_height], [rectangle_width, rectangle_height]])
 
         else:
-            raise ValueError("the theta should between 180 and 0")
+            raise ValueError("The angle theta should be between 180 and 0")
 
         return point_for_cut
 
@@ -153,12 +153,12 @@ class Point:
         elif self.kind == 6:
             return self.triangle(self.info)
         else:
-            raise ValueError("kind should between 1 and 6")
+            raise ValueError("Kind should be between 1 and 6")
 
 
-# test
+# Test
 if __name__ == '__main__':
-    print('start', np.cos(np.pi / 3))
+    print('Start', np.cos(np.pi / 3))
 
     source_image_path = '../images/dataset/16.png'
 
@@ -170,12 +170,12 @@ if __name__ == '__main__':
     y = int(x * np.cos(theta * np.pi / 180)) * 2
     info = [x, y, theta, 6]
     print(info[-1], info[0:-1])
-    # point, rectangle_width, rectangle_height  = Point().square(info=[100])  # 正方形
-    # point, rectangle_width, rectangle_height = Point().rectangular(info=[100, 200])  # 长方形
-    point, rectangle_width, rectangle_height = Point(info=info).run()  # 平行四边形
-    # point, rectangle_width, rectangle_height = Point().rhombic(info=[200, 60])  # 菱形
-    # point, rectangle_width, rectangle_height = Point().hexagon(info=[50])  # 正六边形
-    # point, rectangle_width, rectangle_height = Point().triangle(info=[200, 100, 150])  # 三角形
+    # point, rectangle_width, rectangle_height  = Point().square(info=[100])  # Square
+    # point, rectangle_width, rectangle_height = Point().rectangular(info=[100, 200])  # Rectangle
+    point, rectangle_width, rectangle_height = Point(info=info).run()  # Parallelogram
+    # point, rectangle_width, rectangle_height = Point().rhombic(info=[200, 60])  # Rhombus
+    # point, rectangle_width, rectangle_height = Point().hexagon(info=[50])  # Hexagon
+    # point, rectangle_width, rectangle_height = Point().triangle(info=[200, 100, 150])  # Triangle
 
     cell = Cell(rectangle_width=rectangle_width, rectangle_height=rectangle_height, point=point,
                 source_image_path=source_image_path, kind=3, picture_width=600, picture_height=600)
