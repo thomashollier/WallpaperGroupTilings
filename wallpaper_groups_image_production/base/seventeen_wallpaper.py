@@ -307,29 +307,6 @@ class Cmm(Cell):
             raise ValueError('unknown type : rhombic or square only')
         self.run(func_list=func_list)
 
-
-# class CmmSquare(Cell):
-#     def __init__(self, **kwargs):
-#         point = kwargs['point']
-#         kind, w, h = self.rectangle_init(point)
-#         super(CmmSquare, self).__init__(kind=kind, rectangle_width=w, rectangle_height=h, **kwargs)
-#
-#     def rectangle_init(self, point):
-#         w_w = h_h = point[2][0]
-#         kind = 1  # 按正方形
-#         return kind, w_w, h_h
-#
-#     def generate(self):
-#         func_list = [('paste_img', (0, int(self.point[2][0] // 2))),
-#                      ('update_img',),
-#                      ('mirror_angle', -90, (0, 0)),
-#                      ('mirror_angle', 90, (0, 0)),
-#                      ('rotate', -180, (0, 0)),
-#                      ('over_spread',),
-#                      ]
-#         self.run(func_list=func_list)
-
-
 class P4(Cell):
     def __init__(self, **kwargs):
         point = kwargs['point']
@@ -546,7 +523,6 @@ class P6m(Cell):
     def __init__(self, **kwargs):
         point = kwargs['point']
         kind, w, h = self.rectangle_init(point)
-        print('kind',kind)
         kwargs.update({'kind': kind, 'rectangle_width': w, 'rectangle_height': h})
         super(P6m, self).__init__(**kwargs)
 

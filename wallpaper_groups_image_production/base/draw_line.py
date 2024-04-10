@@ -44,9 +44,7 @@ def draw(img, draw_list):
     cv2.rectangle(np.array(img),(0,0),(200,200),(255,0,0),-1) # Coordinates of upper left and lower right corners
     _, _, _, alpha = img.split()
     img = np.array(img.convert('RGB'))
-    print("--- Draw list functions")
     for func, *parameter in draw_list:
-        print('func', func, *parameter)
         eval(func)(img, *parameter)
     print("---\n")
     img = Image.fromarray(img)

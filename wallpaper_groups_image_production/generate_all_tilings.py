@@ -78,7 +78,12 @@ def draw_line(l, m, deg, source_image_path, save_image_path, is_show):
             'P6m':'P6m(point=point6_2_2, info=info6_2_2, **kwargs).generate()'
     }
 
+    print("point5:\n", point5)
+    print("info5:\n", info5)
+    print("---") 
+
     for k, v in groups.items():
+    #for v in [groups['P2-1']]:
         eval(v)
         eval(v.replace("(point=","Line(point="))
 

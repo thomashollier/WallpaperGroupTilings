@@ -43,6 +43,7 @@ def draw_line(l, m, deg, source_image_path, save_image_path, is_show):
 
     info6_3 = [l, l, 60, 6]  # Equilateral triangle
     point6_3 = Point(info=info6_3).run()
+    print(point6_2_2)
 
 
     kwargs = {'source_image_path': source_image_path, 'save_image_path': save_image_path, 'is_show': is_show,
@@ -78,7 +79,8 @@ def draw_line(l, m, deg, source_image_path, save_image_path, is_show):
             'P6m':'P6m(point=point6_2_2, info=info6_2_2, **kwargs).generate()'
     }
 
-    for k, v in groups.items():
+    #for k, v in groups.items():
+    for v in groups['P6m']:
         eval(v)
         eval(v.replace("(point=","Line(point="))
 

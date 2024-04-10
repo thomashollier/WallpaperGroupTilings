@@ -2,6 +2,18 @@ Code cleanup.
 
 
 
+info[x] -> description of symmetry
+point[x] -> returns the cut line for the edges of the tile based on the specific info (last param of info is the shape type)
+groups{….} -> dictionary describing all the possible permutations
+TilingGroup(point=xx, info = cc, **kwargs)-> individual tile object.
+	parent class is Cell
+		TilingGroup -> child class for drawing the specific tiled wallpaper
+		TilingGroupLine -> child class for drawing the specific tile with lines and the individual tile
+		TilingGroup.generate() -> create a list of functions to generate tiling piece, and runs the functions
+			TiningGroup.run()
+				-> loop over the function list
+					-> functions are methods in Cell
+
 
 
 

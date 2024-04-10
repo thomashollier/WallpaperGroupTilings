@@ -114,7 +114,6 @@ class P2Line(P2):
                 ('rhomb', (self.info[1], h), red)
             ]
 
-        print(self.markImg)
         self.markImg = draw(self.markImg, draw_list)
         func_list = [
             ('over_spread',),
@@ -124,15 +123,6 @@ class P2Line(P2):
         if self.kind == 3:
             func_list[0] = ('over_spread', (self.point[0][0] * 2, 0))
         self.run(func_list=func_list)
-
-    def sssave(self):
-        if self.is_save:
-            path_name_min = self.save_image_path + '/p2_' + str(self.info[-1]) + '_min.png'
-            path_name = self.save_image_path + '/p2_' + str(self.info[-1]) + '_result.png'
-
-            self.markImg.save(path_name_min)
-            self.GroundImg.save(path_name)
-
 
 class P2HexagonalLine(P2Hexagonal):
     def __init__(self, **kwargs):
@@ -172,11 +162,6 @@ class P2HexagonalLine(P2Hexagonal):
             ('show',)
         ]
         self.run(func_list=func_list)
-
-    def sssave(self):
-        if self.is_save:
-            self.markImg.save(self.save_image_path + '/p2_hexagonal_min.png')
-            self.GroundImg.save(self.save_image_path + '/p2_hexagonal_result.png')
 
 
 class PmLine(Pm):
@@ -314,7 +299,6 @@ class PmmLine(Pmm):
         super(PmmLine, self).__init__(**kwargs)
 
     def generate(self):
-        print('kind', self.kind)
         func_list = [('paste_img', (0, 0)),
                      ('update_img',),
                      ('lr_mirror', (0, 0)),

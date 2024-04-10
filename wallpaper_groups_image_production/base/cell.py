@@ -10,7 +10,7 @@ from base.overspread import *
 
 def rotatedRectWithMaxArea(w, h, angle):
     """
-    去除旋转中出现的图像黑边
+    Remove the black edges that appear during rotation.
     """
     if w <= 0 or h <= 0:
         return 0, 0
@@ -62,24 +62,23 @@ class Cell:
         self.angle = kwargs.pop('angle', 0)
 
         self.is_save = kwargs.pop('is_save', True)
-        if 'save_image_path' in kwargs:  # 传入保存路径才保存
+        if 'save_image_path' in kwargs:  # Save path specified
             self.save_image_path = kwargs.pop('save_image_path')
         else:
             self.is_save = False
         self.is_show = kwargs.pop('is_show', False)
 
-        print("\n--- %s ---" % type(self).__name__)
+        print("\n--- init cell ---")
+        print("tile name:", self.class_name)
         print('kind:', self.kind)
         print('angle:', self.angle)
         print('info:', self.info)
         print('point:\n', self.point)
         print('save_image_path:', self.save_image_path)
-        print('class name:', self.class_name)
-        print("--- end cell")
         self.cut()
 
     def rotate(self, angle, pos, center=None, expand=True):
-        # 旋转 Image.NEAREST
+        # Rotate Image.NEAREST
         if center is None:
             img = self.img.rotate(angle, Image.NEAREST, expand=expand)
         else:
@@ -87,24 +86,24 @@ class Cell:
         self.paste_img(pos, img)
 
     def rotate_mark(self, angle, center=None, expand=True):
-        # 旋转
+        # Rotate
         if center is None:
             self.markImg = self.markImg.rotate(angle, Image.NEAREST, expand=expand)
         else:
             self.markImg = self.markImg.rotate(angle, Image.NEAREST, center=center, expand=expand)
 
     def tb_mirror(self, pos):
-        # 上下镜像
+        # Top-bottom mirror
         img = self.img.transpose(Image.FLIP_TOP_BOTTOM)
         self.paste_img(pos, img)
 
     def lr_mirror(self, pos):
-        # 左右镜像
+        # Left-right mirror
         img = self.img.transpose(Image.FLIP_LEFT_RIGHT)
         self.paste_img(pos, img)
 
     def mirror_angle(self, angle, pos, center=None, expand=True):
-        # 斜镜像
+        # Oblique mirror
         img = self.img.transpose(Image.FLIP_LEFT_RIGHT)  # lr mirror
         if center is None:
             img = img.rotate(angle, expand=expand)
@@ -158,26 +157,26 @@ class Cell:
         self.img = copy.deepcopy(self.markImg)
 
     def over_spread(self, oblique_point=None):
-        # 铺满大画布
-        if self.kind == 1 or self.kind == 2:  # 矩形/正方形
+        # Fill the large canvas
+        if self.kind == 1 or self.kind == 2:  # Rectangle/Square
             l = RectangleFull(self.picture_width, self.picture_height, self.rectangle_width, self.rectangle_height)
             points = l.get_paste_points()
 
-        elif self.kind == 3:  # 平行四边形
+        elif self.kind == 3:  # Parallelogram
             l = ObliqueFull(self.picture_width, self.picture_height, self.rectangle_width, self.rectangle_height,
                             oblique_point)
             points = l.get_paste_points()
 
-        elif self.kind == 4:  # 菱形
+        elif self.kind == 4:  # Rhombus
             l = RhombicFull(self.picture_width, self.picture_height, self.rectangle_width, self.rectangle_height)
             points = l.get_paste_points()
 
-        elif self.kind == 5:  # 六边形
+        elif self.kind == 5:  # Hexagon
             l = HexagonalFull(self.picture_width, self.picture_height, self.rectangle_width, self.rectangle_height,
-                              self.info[0])  # 传六边形边长
+                              self.info[0])  # Pass hexagon side length
             points = l.get_paste_points()
         else:
-            raise ValueError("kind should between 1 and 5")
+            raise ValueError("kind should be between 1 and 5")
         _, _, _, mask = self.markImg.split()
         for i in range(len(points)):
             self.GroundImg.paste(self.markImg, points[i], mask=mask)
@@ -198,12 +197,14 @@ class Cell:
             if not os.path.exists(folder_path):
                 os.makedirs(folder_path)
             path = os.path.join(folder_path,
-                                '{i}_{n}_{j}_{k}_angle{l}.png'.format(i=img_name, n=self.__class__.__name__, j=self.kind, k=self.info, l=self.angle))
+                                '{i}_{n}_{j}_{k}_angle{l}.png'.format(i=img_name, n=self.__class__.__name__, j=self.kind,
+                                                                       k=self.info, l=self.angle))
             print('open \"%s\"'% path)
             self.GroundImg.save(path)
             if self.class_name.find("Line")>-1:
                 path = os.path.join(folder_path,
-                                    '{i}_{n}_{j}_{k}_angle{l}_tile.png'.format(i=img_name, n=self.__class__.__name__, j=self.kind, k=self.info, l=self.angle))
+                                    '{i}_{n}_{j}_{k}_angle{l}_tile.png'.format(i=img_name, n=self.__class__.__name__, j=self.kind,
+                                                                                 k=self.info, l=self.angle))
                 self.markImg.save(path)
 
 
@@ -214,8 +215,8 @@ class Cell:
             func_list: (function, parameter)
                     such as 'paste_img','update_img','rotate','over_spread','show'.
         """
+        print("function list:")
         for func, *parameter in func_list:
-            print('self.' + func,*parameter)
+            print('\tself.' + func,*parameter)
             eval('self.' + func)(*parameter)
-        print(self.__class__.__name__)
         self.ground_img_rotate()
